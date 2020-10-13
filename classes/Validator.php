@@ -4,11 +4,13 @@ class Validator
 {
     public const AVAILABALE_CURRENCIES = ["EUR", "USD", "GBP"];
 
-    public $errors;
+    public const AVAILABLE_DELIMITERS = ",.:;|!@^$*-+";
+
+    public static $errors;
 
     public function __construct()
     {
-        $this->errors = [];
+        self::$errors = [];
     }
 
     public function isAvailableCurrency($currency)
@@ -119,4 +121,35 @@ class Validator
         return true;
     }
 
+    public static function isFileName($filename)
+    {
+        self::$errors[] = [];
+        if(!is_string($filename))
+        {
+            self::$errors[] = "Filename must be a string.";
+            return false;
+        }
+        else if(($filename_length = strlen($filename)) && $filename_length >= 3 && $filename_length <= 20)
+        {
+            self::$errors[] = "File name must be between 3 and 20 symbols.";
+            return false;
+        }
+        return true;
+    }
+
+    public static function isDelimiter($delimiter)
+    {
+        self::$errors[] = [];
+        if(!is_string($delimiter))
+        {
+            self::$errors[] = "Delimiter must be a string.";
+            return false;
+        }
+        else if(($delimiter_length = strlen($filename)) && $delimiter_length != 1)
+        {
+            self::$errors[] = "Delimiter must be a single symbol from this set of symbols: {self::$AVAILABLE_DELIMITERS}";
+            return false;
+        }
+        return true;
+    }
 }
