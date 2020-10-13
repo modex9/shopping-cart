@@ -1,6 +1,6 @@
 <?php 
 
-require_once "Entity.php";
+require_once "ProductsFileHandler.php";
 
 class Cart extends Entity
 {
@@ -19,6 +19,7 @@ class Cart extends Entity
 
     public function getTotal()
     {
+        $this->total = 0;
         foreach ($products as $product)
         {
             $this->total += $product->quantity * $product->getPrice();

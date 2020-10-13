@@ -1,5 +1,7 @@
 <?php
 
+require_once "Entity.php";
+
 class Product extends Entity
 {
     public $id;
@@ -14,7 +16,7 @@ class Product extends Entity
 
     public function __construct($id = 0, $name = '', $price = 0, $currency = 0, $quantity = 1)
     {
-        parent::_cunstruct();
+        parent::__construct();
         $this->id = $id;
         $this->name = $name;
         $this->price = $price;
