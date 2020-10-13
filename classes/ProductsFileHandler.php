@@ -21,6 +21,8 @@ class ProductsFileHandler extends FileHandler
     private function getProductLines()
     {
         $file_contents = parent::read();
+        if(!$file_contents)
+            return false;
         $products = explode("\n", $file_contents);
         return $products;
     }
@@ -29,7 +31,7 @@ class ProductsFileHandler extends FileHandler
     public function getProducts()
     {
         $product_lines = $this->getProductLines();
-        if(is_array($product_lines) && count($product_lines) == 0)
+        if(!$product_lines || (is_array($product_lines) && count($product_lines) == 0))
             return false;
 
         $products = [];
@@ -46,7 +48,7 @@ class ProductsFileHandler extends FileHandler
             $name = $product_fields[1];
             $quantity = $product_fields[2];
             $price = $product_fields[3];
-            $currency = $product_fields[4];
+            $currency = trim($product_fields[4]);
 
             $product_obj = new Product($id, $name, $price, $currency, $quantity);
             $products[] = $product_obj;
