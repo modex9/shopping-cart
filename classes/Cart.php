@@ -11,9 +11,19 @@ class Cart extends Entity
     public function __construct($products)
     {
         parent::__construct();
-        foreach ($products as $product)
+        if($products)
         {
-            $this->products[$product->id] = $product;
+            foreach ($products as $product)
+            {
+                if($product->quantity > 0)
+                {
+                    $this->addToCart($product);
+                }
+                else
+                {
+                    $this->removeFromCart($product);
+                }
+            }
         }
     }
 
@@ -33,22 +43,28 @@ class Cart extends Entity
 
     public function addToCart($product)
     {
-        $this->products[$product->id] = $product;
+        if(isset($this->products[$product->id]))
+        {
+            $this->updateCartProduct($product);
+        }
+        else
+        {
+            $this->products[$product->id] = $product;
+        }
     }
 
-    public function removeFromCart($id_product, $quantity)
+    public function removeFromCart($product)
     {
-        $reduced_product = getCartProduct($id_product);
-        if($reduced_product)
+        if(isset($this->products[$product->id]))
         {
-            if($quantity >= $reduced_product)
+            if(abs($product->quantity) >= $this->products[$product->id]->quantity)
             {
-                unset($this->products[$id_product]);
+                unset($this->products[$product->id]);
             }
             else
             {
-                $reduced_product->quantity -= $quantity;
-                $this->products[$id_product] = $reduced_product;
+                // $product->quantity is negative
+                $this->products[$product->id]->quantity += $product->quantity;
             }
         }
     }
@@ -56,5 +72,13 @@ class Cart extends Entity
     private function getCartProduct($id_product)
     {
         return isset($this->products[$id_product]) ? $this->products[$id_product] : null;
+    }
+
+    // Not sure how to interpret the update of a cart with given example data. Should it override the old one or should they merge?
+    private function updateCartProduct($product)
+    {
+        $this->products[$product->id]->quantity = $product->quantity;
+        $this->products[$product->id]->price = $product->price;
+        $this->products[$product->id]->currency = $product->currency;
     }
 }
