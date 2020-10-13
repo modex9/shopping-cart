@@ -24,14 +24,19 @@ class Product extends Entity
         $this->quantity = $quantity;
     }
 
-    public function getPrice()
+    public function getPrice($currency)
     {
-        $default_currency_rate = self::$currency_rates[self::$default_currency];
-        $cart_currency_rate = self::$currency_rates[$product->currency] / $default_currency_rate;
-        if($this->validator->isCurrencyRate($cart_currency_rate))
-            return $this->price * $cart_currency_rate;
+        if($currency == $this->currency)
+        {
+            return $this->price;
+        }
         else
-            $this->validator->printErrors();
+        {
+            $product_currency = $this->currency;
+            $current_rate = self::$currency_rates[$product_currency];
+            $target_rate = self::$currency_rates[$currency];
+            return $this->price * ($current_rate / $target_rate);
+        }
     }
 
 }
