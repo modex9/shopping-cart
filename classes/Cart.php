@@ -30,15 +30,39 @@ class Cart extends Entity
     public function getTotal()
     {
         $this->total = 0;
-        foreach ($products as $product)
+        foreach ($this->products as $product)
         {
-            $this->total += $product->quantity * $product->getPrice();
+            $this->total += $product->quantity * $product->getPrice(self::$default_currency);
         }
+        $this->total = round($this->total, 2);
     }
 
-    public function printCartTotal($currency = "EUR")
+    public function printCartTotal()
     {
-        echo "Cart total is {$this->total} {$currency}";
+        $this->getTotal();
+        $currency = self::$default_currency;
+        echo "Cart total is {$this->total} {$currency}".self::$eol;
+        $this->printLineDelimiter();
+    }
+
+    public function printCartProducts()
+    {
+        $eol = self::$eol;
+        echo "Your cart contains these products:".$eol;
+        $this->printLineDelimiter();
+        if(empty($this->products))
+        {
+            echo "Cart is empty{$eol}";
+        }
+        else 
+        {
+            echo "ID | Product name | Quantity | Price | Currency{$eol}";
+            foreach($this->products as $product)
+            {
+                echo "{$product->id} | {$product->name} | {$product->quantity} | {$product->price} | {$product->currency}{$eol}";
+            }
+        }
+        $this->printLineDelimiter();
     }
 
     public function addToCart($product)

@@ -33,8 +33,8 @@ class Product extends Entity
         else
         {
             $product_currency = $this->currency;
-            $current_rate = self::$currency_rates[$product_currency];
-            $target_rate = self::$currency_rates[$currency];
+            $current_rate = self::$currency_rates[strtoupper($product_currency)];
+            $target_rate = self::$currency_rates[strtoupper($currency)];
             return $this->price * ($current_rate / $target_rate);
         }
     }
