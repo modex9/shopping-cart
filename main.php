@@ -11,6 +11,7 @@ function printInfo()
     \n\t info - print program's manual
     \n\t cart - print cart products
     \n\t total - print total sum of products in the cart
+    \n\t change_currency - change default currency
     \n\t exit - exit the program \n";
 }
 
@@ -45,6 +46,12 @@ while ($run)
         case "total":
             $cart->printCartTotal();
             break;
+        case "change_currency":
+            {
+                $currency = readline("Enter currency:");
+                $cart->changeDefaultCurrency($currency);
+                break;
+            }
         case "info":
             printInfo();
             break;

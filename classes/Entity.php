@@ -11,24 +11,32 @@ abstract class Entity
         'GBP' => 1.0 / 0.88,
     ];
 
-    public static $default_currency = "gbp";
+    public static $default_currency = "EUR";
 
     //End of line, depending on programs environment.
     public static $eol;
 
-    public $validator;
-
     public function __construct()
     {
         self::$eol = $this->getEol();
-        $this->validator = new Validator();
     }
 
     public function changeDefaultCurrency($currency)
     {
-        if($this->validator->isAvailableCurrency($currency))
+        Validator::$errors = [];
+        $eol = self::$eol;
+        if(Validator::isAvailableCurrency($currency))
         {
+            echo "Default currency successfully changed to {$currency}".$eol;
+            $this->printLineDelimiter();
             self::$default_currency = $currency;
+        }
+        else
+        {
+            foreach (Validator::$errors as $error)
+            {
+                echo $error . $eol;
+            }
         }
     }
 
