@@ -1,6 +1,6 @@
 <?php
 
-require_once "Validator.php";
+namespace Entity;
 
 abstract class Entity
 {

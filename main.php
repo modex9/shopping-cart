@@ -1,6 +1,9 @@
 <?php
 
-require_once "classes/Cart.php";
+require 'vendor/autoload.php';
+
+use Entity\ProductsFileHandler;
+use Entity\Cart;
 
 function printInfo()
 {

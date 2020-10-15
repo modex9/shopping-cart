@@ -1,7 +1,6 @@
 <?php
 
-require_once "FileHandler.php";
-require_once "Product.php";
+namespace Entity;
 
 class ProductsFileHandler extends FileHandler
 {

@@ -1,6 +1,6 @@
 <?php 
 
-require_once "Entity.php";
+namespace Entity;
 
 class FileHandler extends Entity
 {

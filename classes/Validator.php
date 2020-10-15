@@ -1,5 +1,7 @@
 <?php
 
+namespace Entity;
+
 class Validator
 {
     public const AVAILABALE_CURRENCIES = ["EUR", "USD", "GBP"];

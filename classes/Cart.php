@@ -1,6 +1,6 @@
 <?php 
 
-require_once "ProductsFileHandler.php";
+namespace Entity;
 
 class Cart extends Entity
 {
