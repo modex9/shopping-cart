@@ -30,8 +30,7 @@ class ProductsFileHandler extends FileHandler
         $products = [];
         foreach($product_lines as $i => $product)
         {
-            $line = $i + 1;
-            $product_fields = $this->parseProductLine($product, $line);
+            $product_fields = $this->parseProductLine($product);
             if(!$product_fields)
                 continue;
 
@@ -52,12 +51,12 @@ class ProductsFileHandler extends FileHandler
         return $products;
     }
 
-    private function parseProductLine($line, $line_number = 0)
+    private function parseProductLine($line, $file = true)
     {
         $product_fields = explode($this->columns_delimiter, $line);
         if(count($product_fields) != self::NUM_COLUMNS)
         {
-            if($line_number != 0)
+            if($file)
                 $this->printLine("Failed reading product information at line {$line}. Check file formatting.");
             else
                 $this->printLine("Cart update failed. Check your input formatting.");
@@ -69,7 +68,7 @@ class ProductsFileHandler extends FileHandler
     public function write($content)
     {
         $eol = $this->eol;
-        $product_fields = $this->parseProductLine($content);
+        $product_fields = $this->parseProductLine($content, false);
         if($product_fields)
         {
 
@@ -78,7 +77,7 @@ class ProductsFileHandler extends FileHandler
             {
                 $this->printLine("Product quantity is 0. Cart update has no effect");
                 $this->printLineDelimiter();
-                return;
+                return false;
             }
             if(Validator::validateProduct($product))
             {
@@ -100,6 +99,7 @@ class ProductsFileHandler extends FileHandler
                         else
                         {
                             $this->printLine("Product with ID {$product->id} does not exist in the cart, reduction is not possible.");
+                            return false;
                         }
                         $this->printLineDelimiter();
                     }
@@ -115,7 +115,6 @@ class ProductsFileHandler extends FileHandler
                     echo $error . $eol;
                 }
             }
-
         }
         return false;
     }

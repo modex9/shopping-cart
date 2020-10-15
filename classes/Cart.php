@@ -25,6 +25,10 @@ class Cart extends Entity
                 }
             }
         }
+        else
+        {
+            $this->products = [];
+        }
     }
 
     public function getTotal()
@@ -94,11 +98,13 @@ class Cart extends Entity
         {
             $this->printLine("Couldn't find find product {$product->id}, reduction failed.");
         }
+        if(!$this->products)
+            $this->products = [];
     }
 
-    private function getCartProduct($id_product)
+    public function containsProduct($product)
     {
-        return isset($this->products[$id_product]) ? $this->products[$id_product] : null;
+        return isset($this->products[$product->id]);
     }
 
     // Not sure how to interpret the update of a cart with given example data. Should it override the old one or should they merge?

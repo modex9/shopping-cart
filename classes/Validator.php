@@ -77,8 +77,8 @@ class Validator
             self::$errors[] = "Product price must be greater than zero.";
         }
 
-        //Product currency validation: simply check if it exists. Matters only hen adding product to cart.
-        if($product->quantity > 0)
+        //Product currency validation: simply check if it exists. Matters only when adding product to cart.
+        if($product->quantity >= 0)
             self::isAvailableCurrency($product->currency);
 
         //Product quantity validation: any integer is good.
