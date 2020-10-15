@@ -1,21 +1,21 @@
 <?php 
 
+require_once "Entity.php";
 
-class FileHandler
+class FileHandler extends Entity
 {
-    public $filename = "../input.txt";
-
-    public function __construct($filename = null)
-    {
-        if($filename && Validator::isFileName($filename))
-        {
-            $this->filename = $filename;
-        }
-    }
+    public $filename = "input.txt";
 
     public function read()
     {
-        return file_get_contents($this->filename);
+        if(file_exists($this->filename))
+            return file_get_contents($this->filename);
+        else
+        {
+            $this->write('');
+            return false;
+        }
+            
     }
 
     public function write($content)
