@@ -41,25 +41,24 @@ class Cart extends Entity
     {
         $this->getTotal();
         $currency = self::$default_currency;
-        echo "Cart total is {$this->total} {$currency}".self::$eol;
+        $this->printLine("Cart total is {$this->total} {$currency}");
         $this->printLineDelimiter();
     }
 
     public function printCartProducts()
     {
-        $eol = self::$eol;
-        echo "Your cart contains these products:".$eol;
+        $this->printLine("Your cart contains these products:");
         $this->printLineDelimiter();
         if(empty($this->products))
         {
-            echo "Cart is empty{$eol}";
+            $this->printLine("Cart is empty");
         }
         else 
         {
-            echo "ID | Product name | Quantity | Price | Currency{$eol}";
+            $this->printLine("ID | Product name | Quantity | Price | Currency");
             foreach($this->products as $product)
             {
-                echo "{$product->id} | {$product->name} | {$product->quantity} | {$product->price} | {$product->currency}{$eol}";
+                $this->printLine("{$product->id} | {$product->name} | {$product->quantity} | {$product->price} | {$product->currency}");
             }
         }
         $this->printLineDelimiter();
@@ -90,6 +89,10 @@ class Cart extends Entity
                 // $product->quantity is negative
                 $this->products[$product->id]->quantity += $product->quantity;
             }
+        }
+        else
+        {
+            $this->printLine("Couldn't find find product {$product->id}, reduction failed.");
         }
     }
 

@@ -40,7 +40,7 @@ class ProductsFileHandler extends FileHandler
                 $products[] = $product_obj;
             else
             {
-                $this->printLine("Failed reading product information at line {$line}. Following errors have occured:.");
+                $this->printLine("Failed reading product information at line {$product}. Following errors have occured:.");
                 foreach (Validator::$errors as $error)
                 {
                     echo $error . $this->eol;

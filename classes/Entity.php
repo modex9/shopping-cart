@@ -14,20 +14,19 @@ abstract class Entity
     public static $default_currency = "EUR";
 
     //End of line, depending on programs environment.
-    public static $eol;
+    public $eol;
 
     public function __construct()
     {
-        self::$eol = $this->getEol();
+        $this->eol = $this->getEol();
     }
 
     public function changeDefaultCurrency($currency)
     {
         Validator::$errors = [];
-        $eol = self::$eol;
         if(Validator::isAvailableCurrency($currency))
         {
-            echo "Default currency successfully changed to {$currency}".$eol;
+            $this->printLine("Default currency successfully changed to {$currency}");
             $this->printLineDelimiter();
             self::$default_currency = $currency;
         }
@@ -35,7 +34,7 @@ abstract class Entity
         {
             foreach (Validator::$errors as $error)
             {
-                echo $error . $eol;
+                $this->printLine($error);
             }
         }
     }
@@ -54,6 +53,11 @@ abstract class Entity
 
     public function printLineDelimiter($symbol = '-', $n = 40)
     {
-        echo str_repeat($symbol, $n).self::$eol;
+        $this->printLine(str_repeat($symbol, $n));
+    }
+
+    public function printLine($content)
+    {
+        echo $content . $this->eol;
     }
 }
