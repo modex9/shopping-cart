@@ -13,7 +13,7 @@ abstract class Entity
 
     public static $default_currency = "EUR";
 
-    //End of line, depending on programs environment.
+    //End of line, depending on program's environment.
     public $eol;
 
     public function __construct()

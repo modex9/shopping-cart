@@ -83,7 +83,7 @@ class Validator
         if($product->quantity >= 0)
             self::isAvailableCurrency($product->currency);
 
-        //Product quantity validation: any integer is good.
+        //Product quantity validation: numeric is good. Parse to integer, if numeric.
         if(!is_numeric($product->quantity))
         {
             self::$errors[] = "Product quantity must be a whole number.";

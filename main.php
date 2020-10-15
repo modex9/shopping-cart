@@ -10,7 +10,7 @@ function printInfo()
     echo "Available commands: \n\t update - add/update/remove product from cart. Input format : 'Product ID;Product name;Quantity;Price;Product Currency'
     \n\t\t ;enter Quantity greater than zero to add product
     \n\t\t ;enter Quantity less than zero to reduce quantity of product or remove it completely
-    \n\t\t ;if product with already existing ID is entered, then new values will override the olde ones
+    \n\t\t ;if product with already existing ID is entered, then new values will override the old ones
     \n\t info - print program's manual
     \n\t cart - print cart products
     \n\t total - print total sum of products in the cart
@@ -25,7 +25,6 @@ $cart = new Cart($products);
 $products_file_handler->cart = $cart;
 
 printInfo();
-
 
 $run = true;
 while ($run)
