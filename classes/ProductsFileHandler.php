@@ -11,15 +11,6 @@ class ProductsFileHandler extends FileHandler
 
     private const NUM_COLUMNS = 5;
 
-    public function __construct($delimiter = null, $filename = null)
-    {
-        parent::__construct($filename);
-        if($delimiter && Validator::isDelimiter($delimiter))
-        {
-            $this->columns_delimiter = $delimiter;
-        }
-    }
-
     private function getProductLines()
     {
         $file_contents = parent::read();
@@ -39,18 +30,23 @@ class ProductsFileHandler extends FileHandler
         $products = [];
         foreach($product_lines as $i => $product)
         {
-            $product_fields = $this->parseProductLine($product, $i + 1);
+            $line = $i + 1;
+            $product_fields = $this->parseProductLine($product, $line);
             if(!$product_fields)
                 continue;
 
-            $id = $product_fields[0];
-            $name = $product_fields[1];
-            $quantity = $product_fields[2];
-            $price = $product_fields[3];
-            $currency = trim($product_fields[4]);
-
-            $product_obj = new Product($id, $name, $price, $currency, $quantity);
-            $products[] = $product_obj;
+            $product_obj = $this->createProduct($product_fields);
+            if(Validator::validateProduct($product_obj))
+                $products[] = $product_obj;
+            else
+            {
+                $this->printLine("Failed reading product information at line {$line}. Following errors have occured:.");
+                foreach (Validator::$errors as $error)
+                {
+                    echo $error . $this->eol;
+                }
+                $this->printLineDelimiter();
+            }
         }
 
         return $products;
@@ -62,9 +58,9 @@ class ProductsFileHandler extends FileHandler
         if(count($product_fields) != self::NUM_COLUMNS)
         {
             if($line_number != 0)
-                echo "Failed reading product information at line {$line}. Check file formatting.".self::$eol;
+                $this->printLine("Failed reading product information at line {$line}. Check file formatting.");
             else
-                echo "Cart update failed. Check your input formatting.".self::$eol;
+                $this->printLine("Cart update failed. Check your input formatting.");
             return false;
         }
         return $product_fields;
@@ -72,17 +68,18 @@ class ProductsFileHandler extends FileHandler
 
     public function write($content)
     {
-        $eol = self::$eol;
+        $eol = $this->eol;
         $product_fields = $this->parseProductLine($content);
         if($product_fields)
         {
-            $id = $product_fields[0];
-            $name = $product_fields[1];
-            $quantity = $product_fields[2];
-            $price = $product_fields[3];
-            $currency = trim($product_fields[4]);
 
-            $product = new Product($id, $name, $price, $currency, $quantity);
+            $product = $this->createProduct($product_fields);
+            if($product->quantity == 0)
+            {
+                $this->printLine("Product quantity is 0. Cart update has no effect");
+                $this->printLineDelimiter();
+                return;
+            }
             if(Validator::validateProduct($product))
             {
                 if(isset($this->cart))
@@ -91,18 +88,18 @@ class ProductsFileHandler extends FileHandler
                     if($product->quantity >= 0)
                     {
                         $this->cart->addToCart($product);
-                        echo "{$product->name} was successfully added to your cart.".$eol;
+                        $this->printLine("{$product->name} was successfully added to your cart.");
                     }
                     else
                     {
                         if($this->cart->containsProduct($product))
                         {
                             $this->cart->removeFromCart($product);
-                            echo "{$product->name} product quantity successfully reduced.".$eol;
+                            $this->printLine("{$product->name} product quantity successfully reduced.");
                         }
                         else
                         {
-                            echo "Product with ID {$product->id} does not exist in the cart, reduction is not possible.".$eol;
+                            $this->printLine("Product with ID {$product->id} does not exist in the cart, reduction is not possible.");
                         }
                         $this->printLineDelimiter();
                     }
@@ -121,5 +118,17 @@ class ProductsFileHandler extends FileHandler
 
         }
         return false;
+    }
+
+    public function createProduct($product_fields)
+    {
+        $id = $product_fields[0];
+        $name = $product_fields[1];
+        $quantity = $product_fields[2];
+        $price = $product_fields[3];
+        $currency = trim($product_fields[4]);
+
+        $product = new Product($id, $name, $price, $currency, $quantity);
+        return $product;
     }
 }
