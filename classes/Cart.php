@@ -110,6 +110,7 @@ class Cart extends Entity
     // Not sure how to interpret the update of a cart with given example data. Should it override the old one or should they merge?
     private function updateCartProduct($product)
     {
+        $this->products[$product->id]->name = $product->name;
         $this->products[$product->id]->quantity = $product->quantity;
         $this->products[$product->id]->price = $product->price;
         $this->products[$product->id]->currency = $product->currency;
