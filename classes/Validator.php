@@ -88,6 +88,10 @@ class Validator
         {
             self::$errors[] = "Product quantity must be a whole number.";
         }
+        else
+        {
+            $product->quantity = (int) $product->quantity;
+        }
 
         if(count(self::$errors))
             return false;
