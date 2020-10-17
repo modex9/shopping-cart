@@ -1,9 +1,12 @@
 <?php
 
 namespace Entity;
+use Traits\Printable;
 
 class Validator
 {
+    use Printable;
+
     public const AVAILABALE_CURRENCIES = ["EUR", "USD", "GBP"];
 
     public const AVAILABLE_DELIMITERS = ",.:;|!@^$*-+";
@@ -12,7 +15,7 @@ class Validator
 
     public function __construct()
     {
-        self::$errors = [];
+        $this->eol = $this->getEol();
     }
 
     public static function isAvailableCurrency($currency)
