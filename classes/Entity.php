@@ -23,8 +23,8 @@ abstract class Entity
 
     public function changeDefaultCurrency($currency)
     {
-        Validator::$errors = [];
-        if(Validator::isAvailableCurrency($currency))
+        $validator = new Validator();
+        if($validator->isAvailableCurrency($currency))
         {
             $this->printLine("Default currency successfully changed to {$currency}");
             $this->printLineDelimiter();
@@ -32,10 +32,7 @@ abstract class Entity
         }
         else
         {
-            foreach (Validator::$errors as $error)
-            {
-                $this->printLine($error);
-            }
+            $validator->printErrors();
         }
     }
 

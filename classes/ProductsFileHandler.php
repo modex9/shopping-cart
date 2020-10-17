@@ -27,6 +27,7 @@ class ProductsFileHandler extends FileHandler
             return false;
 
         $products = [];
+        $validator = new Validator();
         foreach($product_lines as $i => $product)
         {
             $product_fields = $this->parseProductLine($product);
@@ -34,15 +35,12 @@ class ProductsFileHandler extends FileHandler
                 continue;
 
             $product_obj = $this->createProduct($product_fields);
-            if(Validator::validateProduct($product_obj))
+            if($validator->validateProduct($product_obj))
                 $products[] = $product_obj;
             else
             {
                 $this->printLine("Failed reading product information at line {$product}. Following errors have occured:");
-                foreach (Validator::$errors as $error)
-                {
-                    echo $error . $this->eol;
-                }
+                $validator->printErrors();
                 $this->printLineDelimiter();
             }
         }
@@ -78,7 +76,8 @@ class ProductsFileHandler extends FileHandler
                 $this->printLineDelimiter();
                 return false;
             }
-            if(Validator::validateProduct($product))
+            $validator = new Validator();
+            if($validator->validateProduct($product))
             {
                 if(isset($this->cart))
                 {
@@ -109,10 +108,7 @@ class ProductsFileHandler extends FileHandler
             }
             else
             {
-                foreach (Validator::$errors as $error)
-                {
-                    echo $error . $eol;
-                }
+                $validator->printErrors();
             }
         }
         return false;
