@@ -47,7 +47,7 @@ abstract class FileHandler
         $file_contents = $this->read();
         if(!$file_contents)
             return false;
-        $lines = explode("\r\n", $file_contents);
+        $lines = explode("\n", $file_contents);
         return $lines;
     }
 
