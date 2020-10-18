@@ -72,6 +72,16 @@ class Validator
             $this->errors[] = "Product name must be between 2 and 50 symbols.";
         }
 
+        //Product quantity validation: numeric is good. Parse to integer, if numeric.
+        if(!is_numeric($product->quantity))
+        {
+            $this->errors[] = "Product quantity must be a whole number.";
+        }
+        else
+        {
+            $product->quantity = (int) $product->quantity;
+        }
+
         //Product price validation: numeric and greater than zero. Validate only when adding to cart.
         if(!is_numeric($product->price) && $product->quantity > 0)
         {
@@ -84,16 +94,54 @@ class Validator
 
         //Product currency validation: simply check if it exists. Matters only when adding product to cart.
         if($product->quantity >= 0)
-            self::isAvailableCurrency($product->currency);
+            $this->isAvailableCurrency($product->currency);
 
-        //Product quantity validation: numeric is good. Parse to integer, if numeric.
-        if(!is_numeric($product->quantity))
+        if(count($this->errors))
+            return false;
+        return true;
+    }
+
+    public function validateCurrency($currency)
+    {
+        $this->errors = [];
+        //Check if $currency is object and if it is an instance of Currency.
+        if(is_object($currency) && !($currency instanceof Currency))
         {
-            $this->errors[] = "Product quantity must be a whole number.";
+            $this->errors[] = "Object must be an instance of Currency," . classname($currency) . " object given.";
+            return false;
+        }
+        else if(!is_object($currency))
+        {
+            $this->errors[] = "Object of class Currency must be provided.";
+            return false;
+        }
+
+        //Currency name validation: exactly 3 symbols
+        $currency_name = $currency->getName();
+        $name_length = strlen($currency_name);
+        if(!is_string($currency_name))
+        {
+            $this->errors[] = "Currency name must be a string.";
+        }
+        else if($name_length != 3)
+        {
+            $this->errors[] = "Currency name must be exactly 3 symbols.";
         }
         else
         {
-            $product->quantity = (int) $product->quantity;
+            $currency->setName(strtoupper($currency_name));
+        }
+
+        $currency_rate = $currency->getRate();
+        //Currency rate validation: numeric, greater than 0.
+        if(!is_numeric($currency_rate))
+        {
+            $this->errors[] = "Currency rate must be numeric.";
+        }
+        $currency->setRate((float) $currency_rate);
+        if($currency->getRate() <= 0)
+        {
+            $this->errors[] = "Currency rate must be greater than zero.";
         }
 
         if(count($this->errors))
