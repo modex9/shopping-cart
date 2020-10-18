@@ -8,8 +8,6 @@ class Currency extends Entity
 
     private $rate;
 
-    private static $available_currencies = [];
-
     public function __construct($name = "EUR", $rate = 1.0)
     {
         parent::__construct();
@@ -35,19 +33,6 @@ class Currency extends Entity
     public function setRate($rate)
     {
         $this->rate = $rate;
-    }
-
-    public static function setAvailableCurrencies($currencies)
-    {
-        foreach($currencies as $currency)
-        {
-            self::$available_currencies[$currency->name] = $currency->rate;
-        }
-    }
-
-    public static function getAvailableCurrencies()
-    {
-        return self::$available_currencies;
     }
 
 }

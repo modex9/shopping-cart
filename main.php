@@ -4,6 +4,7 @@ require 'vendor/autoload.php';
 
 use Entity\CurrenciesFileHandler;
 use Entity\ProductsFileHandler;
+use Entity\CurrenciesContainer;
 use Entity\Currency;
 use Entity\Cart;
 
@@ -17,11 +18,12 @@ function printInfo()
     \n\t cart - print cart products
     \n\t total - print total sum of products in the cart
     \n\t change_currency - change default currency
+    \n\t currencies - print available currencies
     \n\t exit - exit the program \n";
 }
 $currencies_file_handler = new CurrenciesFileHandler();
 $currencies = $currencies_file_handler->getCurrencies();
-Currency::setAvailableCurrencies($currencies);
+$currencies_container = CurrenciesContainer::getInstance($currencies);
 
 //Read product file and create cart from products.
 $products_file_handler = new ProductsFileHandler();
@@ -61,6 +63,9 @@ while ($run)
             }
         case "info":
             printInfo();
+            break;
+        case "currencies":
+            $currencies_container->printAvailableCurrencies();
             break;
         case "exit":
             $run = false;

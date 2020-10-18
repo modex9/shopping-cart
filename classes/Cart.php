@@ -47,6 +47,7 @@ class Cart extends Entity
     {
         $this->getTotal();
         $currency = self::$default_currency;
+        $this->printLineDelimiter();
         $this->printLine("Cart total is {$this->total} {$currency}");
         $this->printLineDelimiter();
     }
@@ -123,6 +124,7 @@ class Cart extends Entity
         $validator = new Validator();
         if($validator->isAvailableCurrency($currency))
         {
+            $currency = strtoupper($currency);
             $this->printLine("Default currency successfully changed to {$currency}");
             $this->printLineDelimiter();
             self::$default_currency = $currency;
