@@ -1,6 +1,10 @@
 <?php
 
-namespace Entity;
+namespace Entity\FileHandlers;
+use Entity\FileHandlers\FileHandler;
+use Entity\Validator;
+use Entity\Currency;
+use Entity\CurrenciesContainer; 
 
 class CurrenciesFileHandler extends FileHandler
 {

@@ -1,6 +1,8 @@
 <?php
 
-namespace Entity;
+namespace Entity\FileHandlers;
+use Entity\Validator;
+use Entity\Product;
 
 class ProductsFileHandler extends FileHandler
 {

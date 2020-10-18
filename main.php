@@ -2,8 +2,8 @@
 
 require 'vendor/autoload.php';
 
-use Entity\CurrenciesFileHandler;
-use Entity\ProductsFileHandler;
+use Entity\FileHandlers\CurrenciesFileHandler;
+use Entity\FileHandlers\ProductsFileHandler;
 use Entity\CurrenciesContainer;
 use Entity\Currency;
 use Entity\Cart;

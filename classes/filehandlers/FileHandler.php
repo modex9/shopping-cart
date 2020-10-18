@@ -1,6 +1,6 @@
 <?php 
 
-namespace Entity;
+namespace Entity\FileHandlers;
 use Traits;
 
 abstract class FileHandler
