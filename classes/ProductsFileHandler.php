@@ -78,7 +78,7 @@ class ProductsFileHandler extends FileHandler
                     }
 
                 }
-                parent::write("\n" . $content);
+                parent::write(PHP_EOL. $content);
                 return true;
             }
             else

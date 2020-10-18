@@ -39,7 +39,6 @@ class CurrenciesFileHandler extends FileHandler
 
     public function write($content)
     {
-        $eol = $this->eol;
         $currency_fields = $this->parseEntityLine($content, false);
         if($currency_fields)
         {
@@ -47,9 +46,26 @@ class CurrenciesFileHandler extends FileHandler
             $validator = new Validator();
             if($validator->validateCurrency($currency))
             {
+                $currencies_container = CurrenciesContainer::getInstance();
                 $this->printLineDelimiter();
-                $this->printLine("{$currency->getName()} was successfully added.");
-                parent::write($eol . $content);
+                if($currencies_container->containsCurrency($currency->getName()))
+                {
+                    if($this->updateCurrency($currency))
+                    {
+                        $this->printLine("{$currency->getName()} was successfully updated.");
+                        $currencies_container->updateCurrency($currency);
+                    }
+                    else
+                    {
+                        $this->printLine("Failed to update {$currency->getName()} currency.");
+                    }
+                }
+                else
+                {
+                    $currencies_container->addCurrency($currency);
+                    $this->printLine("{$currency->getName()} was successfully added.");
+                    parent::write(PHP_EOL . $content);
+                }
                 return true;
             }
             else
@@ -60,12 +76,34 @@ class CurrenciesFileHandler extends FileHandler
         return false;
     }
 
-    public function createCurrency($product_fields)
+    public function createCurrency($currency_fields)
     {
-        $name = trim($product_fields[0]);
-        $rate = trim($product_fields[1]);
+        $name = trim($currency_fields[0]);
+        $rate = trim($currency_fields[1]);
 
         $currency = new Currency($name, $rate);
         return $currency;
+    }
+
+    public function updateCurrency($updated_currency)
+    {
+        $currency_lines = $this->getLines();
+        if(!$currency_lines || (is_array($currency_lines) && count($currency_lines) == 0))
+            return false;
+
+        foreach($currency_lines as $i => $currency)
+        {
+            $currency_fields = $this->parseEntityLine($currency);
+            if(!$currency_fields)
+                continue;
+            if($currency_fields[0] == $updated_currency->getName())
+            {
+                $currency_fields[1] = $updated_currency->getRate();
+                $currency_lines[$i] = implode(" ", $currency_fields);
+                file_put_contents($this->filename, implode(PHP_EOL, $currency_lines));
+                return true;
+            }
+        }
+        return false;
     }
 }

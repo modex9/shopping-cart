@@ -17,8 +17,9 @@ function printInfo()
     \n\t info - print program's manual
     \n\t cart - print cart products
     \n\t total - print total sum of products in the cart
-    \n\t change_currency - change default currency
+    \n\t ch_currency - change default currency
     \n\t currencies - print available currencies
+    \n\t add_currency - add new currency (Input format : 'Currency Name[space]Currency Rate')
     \n\t exit - exit the program \n";
 }
 $currencies_file_handler = new CurrenciesFileHandler();
@@ -55,7 +56,7 @@ while ($run)
         case "total":
             $cart->printCartTotal();
             break;
-        case "change_currency":
+        case "ch_currency":
             {
                 $currency = readline("Enter currency:");
                 $cart->changeDefaultCurrency($currency);
@@ -67,6 +68,12 @@ while ($run)
         case "currencies":
             $currencies_container->printAvailableCurrencies();
             break;
+        case "add_currency":
+            {
+                $currency = readline("Enter new currency (Currency name and rate):");
+                $currencies_file_handler->write($currency);
+                break;
+            }
         case "exit":
             $run = false;
             break;

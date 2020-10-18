@@ -73,4 +73,23 @@ class CurrenciesContainer extends Entity
     {
         return isset($this->currencies[$currency_name]);
     }
+
+    public function addCurrency($currency)
+    {
+        $this->currencies[$currency->getName()] = $currency;
+    }
+
+    public function updateCurrency($updated_currency)
+    {
+        $currency_name = $updated_currency->getName();
+        if($currency = $this->getCurrency($currency_name))
+        {
+            $this->currencies[$currency_name]->setRate($updated_currency->getRate());
+        }
+        else
+        {
+            $this->printLineDelimiter();
+            $this->printLine("Could not update currency {$currency_name}. Currency not found");
+        }
+    }
 }
