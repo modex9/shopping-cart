@@ -2,7 +2,9 @@
 
 require 'vendor/autoload.php';
 
+use Entity\CurrenciesFileHandler;
 use Entity\ProductsFileHandler;
+use Entity\Currency;
 use Entity\Cart;
 
 function printInfo()
@@ -17,6 +19,9 @@ function printInfo()
     \n\t change_currency - change default currency
     \n\t exit - exit the program \n";
 }
+$currencies_file_handler = new CurrenciesFileHandler();
+$currencies = $currencies_file_handler->getCurrencies();
+Currency::setAvailableCurrencies($currencies);
 
 //Read product file and create cart from products.
 $products_file_handler = new ProductsFileHandler();
