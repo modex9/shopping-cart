@@ -41,12 +41,11 @@ class ProductsFileHandler extends FileHandler
 
     public function write($content)
     {
-        $eol = $this->eol;
         $product_fields = $this->parseEntityLine($content, false);
         if($product_fields)
         {
             $product = $this->createProduct($product_fields);
-            if($product->quantity == 0)
+            if(ctype_digit($product->quantity) && (int)$product->quantity == 0)
             {
                 $this->printLine("Product quantity is 0. Cart update has no effect");
                 $this->printLineDelimiter();
@@ -79,7 +78,7 @@ class ProductsFileHandler extends FileHandler
                     }
 
                 }
-                parent::write($eol . $content);
+                parent::write("\n" . $content);
                 return true;
             }
             else

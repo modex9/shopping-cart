@@ -26,8 +26,8 @@ class Validator
         }
 
         $currency = strtoupper($currency);
-        $available_currencies = Currency::getAvailableCurrencies();
-        if (!isset($available_currencies[$currency]))
+        $currencies_container = CurrenciesContainer::getInstance();
+        if (!$currencies_container->containsCurrency($currency))
         {
             $this->errors[] = "Currency {$currency} is not available.";
             return false;
@@ -61,19 +61,15 @@ class Validator
             $this->errors[] = "Product ID must be between 3 and 6 symbols.";
         }
 
-        //Product name validation: 2-50 symbol string
-        $name_length = strlen($product->name);
-        if(!is_string($product->name))
-        {
-            $this->errors[] = "Product name must be a string.";
-        }
-        else if($name_length < 2 || $name_length > 50)
-        {
-            $this->errors[] = "Product name must be between 2 and 50 symbols.";
-        }
+        //Product quantity validation: must be a whole number. Parse to integer, if whole number.
 
-        //Product quantity validation: numeric is good. Parse to integer, if numeric.
-        if(!is_numeric($product->quantity))
+        //Remove minus sign for negative numbers, as ctype_digit does not interpret them as whole numbers.
+        if(isset($product->quantity[0]) && $product->quantity[0] == '-')
+            $qty = substr($product->quantity, 1);
+        else
+            $qty = $product->quantity;
+        
+        if(!ctype_digit($qty))
         {
             $this->errors[] = "Product quantity must be a whole number.";
         }
@@ -82,18 +78,32 @@ class Validator
             $product->quantity = (int) $product->quantity;
         }
 
-        //Product price validation: numeric and greater than zero. Validate only when adding to cart.
-        if(!is_numeric($product->price) && $product->quantity > 0)
+        //Product name validation: 2-50 symbol string. Validate only when adding to cart OR quantity is not valid.
+        if($product->quantity > 0 || !ctype_digit($qty))
+        {
+            $name_length = strlen($product->name);
+            if(!is_string($product->name))
+            {
+                $this->errors[] = "Product name must be a string.";
+            }
+            else if($name_length < 2 || $name_length > 50)
+            {
+                $this->errors[] = "Product name must be between 2 and 50 symbols.";
+            }
+        }
+
+        //Product price validation: numeric and greater than zero. Validate only when adding to cart OR quantity is not valid.
+        if(!is_numeric($product->price) && ($product->quantity > 0 || !ctype_digit($qty)))
         {
             $this->errors[] = "Product price must be numeric.";
         }
-        else if($product->price <= 0 && $product->quantity > 0)
+        else if($product->price <= 0 && ($product->quantity > 0 || !ctype_digit($qty)))
         {
             $this->errors[] = "Product price must be greater than zero.";
         }
 
-        //Product currency validation: simply check if it exists. Matters only when adding product to cart.
-        if($product->quantity >= 0)
+        //Product currency validation: simply check if it exists. Validate only when adding to cart OR quantity is not valid.
+        if($product->quantity >= 0 || !ctype_digit($qty))
             $this->isAvailableCurrency($product->currency);
 
         if(count($this->errors))
