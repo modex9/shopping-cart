@@ -7,8 +7,6 @@ class Validator
 {
     use Printable;
 
-    public const AVAILABALE_CURRENCIES = ["EUR", "USD", "GBP"];
-
     public const AVAILABLE_DELIMITERS = ",.:;|!@^$*-+";
 
     public $errors;
@@ -28,7 +26,8 @@ class Validator
         }
 
         $currency = strtoupper($currency);
-        if (!in_array($currency, self::AVAILABALE_CURRENCIES))
+        $available_currencies = Currency::getAvailableCurrencies();
+        if (!isset($available_currencies[$currency]))
         {
             $this->errors[] = "Currency {$currency} is not available.";
             return false;

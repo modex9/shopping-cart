@@ -28,6 +28,7 @@ class Product extends Entity
     {
         $currency = strtoupper($currency);
         $product_currency = strtoupper($this->currency);
+        $available_currencies = Currency::getAvailableCurrencies();
         $validator = new Validator();
         if($currency == $this->currency)
         {
@@ -35,8 +36,8 @@ class Product extends Entity
         }
         else if($validator->isAvailableCurrency($product_currency) && $validator->isAvailableCurrency($currency))
         {
-            $current_rate = self::$currency_rates[$product_currency];
-            $target_rate = self::$currency_rates[$currency];
+            $current_rate = $available_currencies[$product_currency];
+            $target_rate = $available_currencies[$currency];
             return $this->price * ($current_rate / $target_rate);
         }
     }
