@@ -7,6 +7,8 @@ class Cart extends Entity
     public $products;
 
     public $total = 0;
+
+    public static $default_currency = "EUR";
     
     public function __construct($products)
     {
@@ -114,5 +116,20 @@ class Cart extends Entity
         $this->products[$product->id]->quantity = $product->quantity;
         $this->products[$product->id]->price = $product->price;
         $this->products[$product->id]->currency = $product->currency;
+    }
+
+    public function changeDefaultCurrency($currency)
+    {
+        $validator = new Validator();
+        if($validator->isAvailableCurrency($currency))
+        {
+            $this->printLine("Default currency successfully changed to {$currency}");
+            $this->printLineDelimiter();
+            self::$default_currency = $currency;
+        }
+        else
+        {
+            $validator->printErrors();
+        }
     }
 }
