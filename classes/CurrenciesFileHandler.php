@@ -64,7 +64,7 @@ class CurrenciesFileHandler extends FileHandler
                 {
                     $currencies_container->addCurrency($currency);
                     $this->printLine("{$currency->getName()} was successfully added.");
-                    parent::write(PHP_EOL . $content);
+                    parent::write($content);
                 }
                 return true;
             }

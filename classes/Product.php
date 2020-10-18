@@ -40,6 +40,8 @@ class Product extends Entity
             $target_rate = $currencies_container->getCurrency($currency)->getRate();
             return $this->price * ($current_rate / $target_rate);
         }
+        $validator->printErrors();
+        return false;
     }
 
 }

@@ -24,7 +24,7 @@ function printInfo()
 }
 $currencies_file_handler = new CurrenciesFileHandler();
 $currencies = $currencies_file_handler->getCurrencies();
-$currencies_container = CurrenciesContainer::getInstance($currencies);
+$currencies_container = CurrenciesContainer::getInstance($currencies ? $currencies : []);
 
 //Read product file and create cart from products.
 $products_file_handler = new ProductsFileHandler();

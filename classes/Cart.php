@@ -36,20 +36,35 @@ class Cart extends Entity
     public function getTotal()
     {
         $this->total = 0;
-        foreach ($this->products as $product)
+        $validator = new Validator();
+
+        $default_currency = self::$default_currency;
+        if($validator->isAvailableCurrency($default_currency))
         {
-            $this->total += $product->quantity * $product->getPrice(self::$default_currency);
+            foreach ($this->products as $product)
+            {
+                $this->total += $product->quantity * $product->getPrice($default_currency);
+            }
+            $this->total = round($this->total, 2);
+            return true;
         }
-        $this->total = round($this->total, 2);
+        else
+        {
+            $this->printLineDelimiter();
+            $this->printLine("Cart currency is set to {$default_currency}, but it's not available. Please change currency or add a new one.");
+            return false;
+        }
     }
 
     public function printCartTotal()
     {
-        $this->getTotal();
-        $currency = self::$default_currency;
-        $this->printLineDelimiter();
-        $this->printLine("Cart total is {$this->total} {$currency}");
-        $this->printLineDelimiter();
+        if($this->getTotal())
+        {
+            $currency = self::$default_currency;
+            $this->printLineDelimiter();
+            $this->printLine("Cart total is {$this->total} {$currency}");
+            $this->printLineDelimiter();
+        }
     }
 
     public function printCartProducts()

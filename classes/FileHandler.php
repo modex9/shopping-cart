@@ -36,7 +36,10 @@ abstract class FileHandler
 
     protected function write($content)
     {
-        file_put_contents($this->filename, $content, FILE_APPEND | LOCK_EX);
+        if(!file_exists($this->filename))
+            file_put_contents($this->filename, $content, FILE_APPEND | LOCK_EX);
+        else    
+            file_put_contents($this->filename, PHP_EOL . $content, FILE_APPEND | LOCK_EX);
     }
 
     protected function getLines()
